@@ -10,14 +10,14 @@ import java.util.List;
 public class NodeRestClient {
 
     private Client client;
-    private static String END_POINT = "http://localhost:8080/api/v1/nodes";
+    private static String ENDPOINT = "http://localhost:8080/api/v1/nodes";
 
     public NodeRestClient() {
         this.client = Client.create();
     }
 
     public List<Node> getAll() {
-        WebResource webResource = client.resource(END_POINT);
+        WebResource webResource = client.resource(ENDPOINT);
         final ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
 
@@ -26,12 +26,11 @@ public class NodeRestClient {
                     + response.getStatus());
         }
         Gson gson = new Gson();
-        List<Node> nodeList = gson.fromJson(response.getEntity(String.class), new TypeToken<List<Node>>(){}.getType());
-        return nodeList;
+        return gson.fromJson(response.getEntity(String.class), new TypeToken<List<Node>>(){}.getType());
     }
 
-    public Node getNode(String id){
-        WebResource webResource = client.resource(END_POINT + "/" + id);
+    public Node getNodeById(final String id){
+        WebResource webResource = client.resource(ENDPOINT + "/" + id);
         final ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
 
@@ -40,12 +39,11 @@ public class NodeRestClient {
                     + response.getStatus());
         }
         Gson gson = new Gson();
-        Node node = gson.fromJson(response.getEntity(String.class), new TypeToken<Node>(){}.getType());
-        return node;
+        return gson.fromJson(response.getEntity(String.class), new TypeToken<Node>(){}.getType());
     }
 
-    public Boolean deleteNode(String id){
-        WebResource webResource = client.resource(END_POINT + "/" + id);
+    public Boolean deleteNodeById(final String id){
+        WebResource webResource = client.resource(ENDPOINT + "/" + id);
         final ClientResponse response = webResource.accept("application/json")
                 .delete(ClientResponse.class);
         if(response.getStatus() == 200){
@@ -55,8 +53,8 @@ public class NodeRestClient {
         }
     }
 
-    public Node createNode(Node node){
-        WebResource webResource = client.resource(END_POINT);
+    public Node createNode(final Node node){
+        WebResource webResource = client.resource(ENDPOINT);
         Gson gson = new Gson();
         String request = gson.toJson(node);
         ClientResponse response = webResource.type("application/json")
@@ -65,12 +63,11 @@ public class NodeRestClient {
             throw new RuntimeException("Failed : HTTP error code : "
                     + response.getStatus());
         }
-        Node createdNode = gson.fromJson(response.getEntity(String.class), new TypeToken<Node>(){}.getType());
-        return createdNode;
+        return gson.fromJson(response.getEntity(String.class), new TypeToken<Node>(){}.getType());
     }
 
-    public Node updateNode(String id, Node node){
-        WebResource webResource = client.resource(END_POINT + "/" + id);
+    public Node updateNode(final String id, final Node node){
+        WebResource webResource = client.resource(ENDPOINT + "/" + id);
         Gson gson = new Gson();
         String request = gson.toJson(node);
         ClientResponse response = webResource.type("application/json")
@@ -79,7 +76,6 @@ public class NodeRestClient {
             throw new RuntimeException("Failed : HTTP error code : "
                     + response.getStatus());
         }
-        Node createdNode = gson.fromJson(response.getEntity(String.class), new TypeToken<Node>(){}.getType());
-        return createdNode;
+        return gson.fromJson(response.getEntity(String.class), new TypeToken<Node>(){}.getType());
     }
 }
